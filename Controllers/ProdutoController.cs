@@ -51,7 +51,7 @@ namespace csharpBack.Controllers
             return NoContent();
         }
 
-        [HttpGet("{Id:int}")]
+        [HttpGet("status/{Id:int}")]
 
         public async Task<ActionResult> GetStatus(int Id)
         {
@@ -64,7 +64,7 @@ namespace csharpBack.Controllers
             return Ok(Status);
 
         }
-        [HttpPost("{Id:in}")]
+        [HttpPost("status/{Id:int}")]
         public async Task<ActionResult> CheckStatus(int Id)
         {
             var find = await _AppDbContext.produtos.FirstOrDefaultAsync(x => x.Id == Id);
@@ -86,9 +86,167 @@ namespace csharpBack.Controllers
             {
                 find.Status = "Ok!";
             }
-
+            await _AppDbContext.SaveChangesAsync();
             return Ok(find.Status);
         }
+        [HttpPatch("estoque/{Id:int}")]
+        public async Task<ActionResult> AddEstoque([FromBody]int add, int Id)
+        {
+            try
+            {
+                var find = await _AppDbContext.produtos.FirstOrDefaultAsync(x => x.Id == Id);
+                if (find == null)
+                {
+                    return NotFound();
+                }
+                if (add <= 0)
+                {
+                    return Unauthorized();
+                }
+                find.Estoque += add;
+                await _AppDbContext.SaveChangesAsync();
+                return Ok(find);
+            }
+            catch (Exception error)
+            {
+                return Forbid(error.Message);
+            }
 
+
+        }
+        [HttpDelete("estoque/{Id:int}")]
+        public async Task<ActionResult> RemEstoque([FromBody] int add, int Id)
+        {
+            try
+            {
+                var find = await _AppDbContext.produtos.FirstOrDefaultAsync(x => x.Id == Id);
+                if (find == null)
+                {
+                    return NotFound();
+                }
+                if (add <= 0)
+                {
+                    return Unauthorized();
+                }
+                find.Estoque -= add;
+                await _AppDbContext.SaveChangesAsync();
+                return Ok(find);
+
+            }
+            catch (Exception error)
+            {
+                return Forbid(error.Message);
+            }
+
+
+        }
+        [HttpGet("{Id:int}")]
+        public async Task<ActionResult> GetProduct(int Id)
+        {
+            try
+            {
+                var find = await _AppDbContext.produtos.FirstOrDefaultAsync(x => x.Id == Id);
+                if(find == null)
+                {
+                    return NotFound();
+                }
+                return Ok(find);
+            }
+            catch(Exception error)
+            {
+                return Forbid(error.Message);
+            }
+        }
+        [HttpGet("{nome}")]
+        public async Task<ActionResult> GetNaimeProduct(string nome)
+        {
+            try
+            {
+                var find = await _AppDbContext.produtos.Where(x => x.Nome == nome).ToArrayAsync();
+                if(find == null)
+                {
+                    return NotFound();
+                }
+                return Ok(find);
+            }
+            catch(Exception error)
+            {
+                return Forbid(error.Message);
+            }
+        }
+        [HttpGet("ok")]
+        public async Task<ActionResult> PegaOK()
+        {
+            try
+            {
+                var find = await _AppDbContext.produtos.Where(x => x.Status == "Ok!").ToListAsync();
+                if(find == null)
+                {
+                    return NotFound();
+                }   
+                return Ok(find);
+            }
+            catch (Exception error)
+            {
+                
+                return Forbid(error.Message);
+            }
+        }
+        [HttpGet("atencao")]
+        public async Task<ActionResult> PegaTencao()
+        {
+            try
+            {
+                var find = await _AppDbContext.produtos.Where(x => x.Status == "Atenção").ToListAsync();
+                if(find == null)
+                {
+                    return NotFound();
+                }   
+                return Ok(find);
+            }
+            catch (Exception error)
+            {
+                
+                return Forbid(error.Message);
+            }
+        }
+        [HttpGet("critico")]
+        public async Task<ActionResult> PegaCritico()
+        {
+            try
+            {
+                var find = await _AppDbContext.produtos.Where(x => x.Status == "Crítico").ToListAsync();
+                if(find == null)
+                {
+                    return NotFound();
+                }   
+                return Ok(find);
+            }
+            catch (Exception error)
+            {
+                
+                return Forbid(error.Message);
+            }
+        }
+        [HttpGet("ncheck")]
+        public async Task<ActionResult> PegaNcheck()
+        {
+            try
+            {
+                var find = await _AppDbContext.produtos.Where(x => x.Status == "Não Checado").ToListAsync();
+                if(find == null)
+                {
+                    return NotFound();
+                }   
+                return Ok(find);
+            }
+            catch (Exception error)
+            {
+                
+                return Forbid(error.Message);
+            }
+        }
     }
+
+
 }
