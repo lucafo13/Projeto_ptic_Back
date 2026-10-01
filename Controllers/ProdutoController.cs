@@ -23,6 +23,11 @@ namespace csharpBack.Controllers
             {
                 return NoContent();
             }
+            var find = await _AppDbContext.produtos.FirstOrDefaultAsync(x => x.Nome == produto.Nome);
+            if(find != null)
+            {
+                return Conflict();
+            }
             produto.Status = "Não Checado";
             _AppDbContext.produtos.Add(produto);
 
