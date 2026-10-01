@@ -1,0 +1,6 @@
+@API_PTIC_HostAddress = http://localhost:5258
+
+GET {{API_PTIC_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
