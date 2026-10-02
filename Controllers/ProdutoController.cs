@@ -133,6 +133,10 @@ namespace csharpBack.Controllers
                 {
                     return Unauthorized();
                 }
+                if(find.Estoque - add < 0)
+                {
+                    return BadRequest();
+                }
                 find.Estoque -= add;
                 await _AppDbContext.SaveChangesAsync();
                 return Ok(find);
@@ -243,13 +247,19 @@ namespace csharpBack.Controllers
                 {
                     return NotFound();
                 }   
-                return Ok(find);
+                return Ok(find);    
             }
             catch (Exception error)
             {
                 
                 return Forbid(error.Message);
             }
+        }
+        [HttpGet("quantidade")]
+        public async Task<ActionResult> PegaQnt()
+        {
+            var lista = await _AppDbContext.produtos.CountAsync();
+            return Ok(lista);
         }
     }
 
